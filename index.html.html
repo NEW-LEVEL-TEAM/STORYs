@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Inter:wght@400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0f0f0f;color:#e8e8e8;min-height:100vh;padding:32px 16px}
+.wrap{max-width:520px;margin:0 auto}
+h1{font-family:'Unbounded',sans-serif;font-size:16px;color:#F5A800;letter-spacing:0.05em;margin-bottom:4px}
+.sub{font-size:12px;color:#555;margin-bottom:24px}
+
+.main-tabs{display:flex;margin-bottom:24px;border:1.5px solid #2a2a2a;border-radius:10px;overflow:hidden}
+.main-tab{flex:1;padding:13px;background:#1a1a1a;color:#555;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+.main-tab.active{background:#F5A800;color:#000}
+.main-pane{display:none}
+.main-pane.active{display:block}
+
+.text-tabs{display:flex;gap:8px;margin-bottom:18px}
+.text-tab{padding:8px 16px;background:transparent;color:#666;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #2a2a2a;border-radius:999px;font-family:inherit;transition:all .2s}
+.text-tab.active{background:transparent;color:#F5A800;border-color:#F5A800}
+.text-tab:hover:not(.active){border-color:#444;color:#999}
+.text-pane{display:none}
+.text-pane.active{display:block}
+
+.section-divider{border-top:1.5px solid #222;margin:24px 0}
+
+.section{margin-bottom:20px}
+.label{font-size:11px;color:#F5A800;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:10px;padding:12px 10px;cursor:pointer;text-align:left;color:#e8e8e8;transition:all .2s;font-family:inherit;width:100%}
+.card .icon{font-size:18px;margin-bottom:6px;display:block}
+.card .title{font-weight:600;font-size:13px;display:block;margin-bottom:2px}
+.card .hint{font-size:11px;color:#555}
+.card:hover{border-color:#F5A800;background:#1e1a10}
+.card.active{border-color:#F5A800;background:#1e1a10;box-shadow:0 0 0 1px #F5A800}
+.card.error{border-color:#e55;box-shadow:0 0 0 1px #e55}
+
+.scene-wrap{display:none;margin-top:10px}
+.scene-wrap.show{display:block}
+
+.pos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pos-card{background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;color:#e8e8e8;transition:all .2s;font-family:inherit;width:100%}
+.pos-card .icon{font-size:18px;display:block;margin-bottom:4px}
+.pos-card .title{font-size:12px;font-weight:600}
+.pos-card:hover{border-color:#F5A800;background:#1e1a10}
+.pos-card.active{border-color:#F5A800;background:#1e1a10;box-shadow:0 0 0 1px #F5A800}
+.pos-card.error{border-color:#e55;box-shadow:0 0 0 1px #e55}
+
+.hl-group{display:flex;flex-direction:column;gap:8px}
+.hl-item{display:flex;flex-direction:column;gap:4px}
+.hl-label{font-size:11px;color:#555}
+textarea,input[type=text]{width:100%;background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:8px;padding:10px 12px;color:#e8e8e8;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+textarea{resize:none;overflow:hidden;min-height:44px}
+textarea:focus,input:focus{border-color:#F5A800}
+textarea::placeholder,input::placeholder{color:#444}
+
+.frame-block{background:#161616;border:1.5px solid #252525;border-radius:12px;padding:16px;margin-bottom:14px}
+.frame-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.frame-title{font-family:'Unbounded',sans-serif;font-size:11px;color:#F5A800;display:flex;align-items:center;gap:8px}
+.frame-num{background:#F5A800;color:#000;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.frame-del{background:none;border:none;color:#444;cursor:pointer;font-size:18px;line-height:1;padding:2px 4px;font-family:inherit}
+.frame-del:hover{color:#e55}
+
+.add-frame-btn{width:100%;background:none;border:1.5px dashed #2a2a2a;border-radius:10px;padding:13px;color:#555;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:14px}
+.add-frame-btn:hover{border-color:#F5A800;color:#F5A800}
+
+.preview-box{background:#fff;border-radius:10px;padding:20px 16px;margin-top:10px;display:flex;flex-direction:column;gap:8px;min-height:60px;justify-content:center}
+.preview-h1{font-family:'Inter',sans-serif;font-weight:700;font-size:20px;color:#1a1a1a;line-height:1.2;white-space:pre-wrap;word-break:break-word}
+.preview-h2{font-family:'Inter',sans-serif;font-weight:400;font-size:15px;color:#444;line-height:1.3;white-space:pre-wrap;word-break:break-word}
+.preview-h3{font-family:'Inter',sans-serif;font-weight:400;font-size:12px;color:#777;line-height:1.3;white-space:pre-wrap;word-break:break-word}
+.preview-empty{font-size:11px;color:#bbb;font-style:italic}
+
+.btn-row{display:flex;gap:8px}
+.btn-gen{background:#F5A800;color:#000;border:none;border-radius:8px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;flex:1;font-family:inherit;transition:opacity .2s}
+.btn-gen:hover{opacity:.85}
+
+.result-wrap{display:none;margin-top:12px}
+.result-wrap.show{display:block}
+.result-box{background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:10px;padding:14px;font-size:12px;line-height:1.7;color:#aaa;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;margin-bottom:8px}
+.result-label{font-size:11px;color:#F5A800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+.series-item{margin-bottom:12px}
+.series-preview{background:#fff;border-radius:10px;padding:18px 14px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px;min-height:50px;justify-content:center}
+.copy-row{display:flex;align-items:stretch;gap:8px}
+.subtype-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#888;flex:1;line-height:1.3}
+.edit-link{background:none;border:1.5px solid #2a2a2a;color:#888;border-radius:8px;padding:0 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.edit-link:hover{border-color:#F5A800;color:#F5A800}
+
+.btn-copy{background:#1a1a1a;color:#F5A800;border:1.5px solid #F5A800;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.btn-copy:hover{background:#F5A800;color:#000}
+.btn-copy.copied{background:#1e3a1e;border-color:#4caf50;color:#4caf50}
+.btn-copy.full{display:block;width:100%}
+
+.save-indicator{position:fixed;top:16px;right:16px;background:#1e3a1e;border:1px solid #4caf50;color:#4caf50;font-size:11px;padding:6px 12px;border-radius:8px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99}
+.save-indicator.show{opacity:1}
+
+.btn-reset{background:none;border:none;color:#444;font-size:12px;cursor:pointer;margin-top:12px;text-decoration:underline;font-family:inherit}
+.btn-reset:hover{color:#888}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="save-indicator" id="saveIndicator">Сохранено</div>
+<h1>⚡ NEW LEVEL TEAM</h1>
+<div class="sub">Конструктор промптов для сторис</div>
+
+<div class="main-tabs">
+  <button class="main-tab active" onclick="switchMainTab('text')">Тексты</button>
+  <button class="main-tab" onclick="switchMainTab('design')">Дизайн</button>
+</div>
+
+<!-- ===== ВКЛАДКА: ТЕКСТЫ ===== -->
+<div class="main-pane active" id="mainPaneText">
+
+  <div class="text-tabs">
+    <button class="text-tab active" onclick="switchTextTab('post')">По посту</button>
+    <button class="text-tab" onclick="switchTextTab('meaning')">По смыслам</button>
+  </div>
+
+  <div class="text-pane active" id="textPanePost">
+    <div class="section">
+      <div class="label">Текст поста</div>
+      <textarea id="postInput" placeholder="Вставь текст поста, на основе которого нужны сторис" oninput="autoResize(this)" style="min-height:90px"></textarea>
+    </div>
+    <div class="section">
+      <div class="label">Сколько сторис <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(необязательно)</span></div>
+      <input type="text" id="postCount" placeholder="например: 5-8">
+    </div>
+    <div class="btn-row">
+      <button class="btn-gen" onclick="generateTextPrompt('post')">Сгенерировать промпт</button>
+    </div>
+    <div class="result-wrap" id="resultWrapPost">
+      <div class="result-box" id="resultBoxPost"></div>
+      <button class="btn-copy full" id="copyBtnPost">Копировать</button>
+    </div>
+  </div>
+
+  <div class="text-pane" id="textPaneMeaning">
+    <div class="section">
+      <div class="label">Смыслы, которые хочешь донести</div>
+      <textarea id="meaningInput" placeholder="Расскажи подробно про свой или командный кейс и не забудь упомянуть призыв к действию" oninput="autoResize(this)" style="min-height:90px"></textarea>
+    </div>
+    <div class="section">
+      <div class="label">Сколько сторис <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(необязательно)</span></div>
+      <input type="text" id="meaningCount" placeholder="например: 5-8">
+    </div>
+    <div class="btn-row">
+      <button class="btn-gen" onclick="generateTextPrompt('meaning')">Сгенерировать промпт</button>
+    </div>
+    <div class="result-wrap" id="resultWrapMeaning">
+      <div class="result-box" id="resultBoxMeaning"></div>
+      <button class="btn-copy full" id="copyBtnMeaning">Копировать</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== ВКЛАДКА: ДИЗАЙН ===== -->
+<div class="main-pane" id="mainPaneDesign">
+
+  <div class="section">
+    <div class="label">Вставь готовые тексты <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(заполнит кадры автоматически)</span></div>
+    <textarea id="bulkImport" placeholder="Вставь сюда результат из вкладки «Тексты» — Сторис 1, Главный заголовок, Подзаголовок, Дополнение и т.д." oninput="autoResize(this)" style="min-height:44px;max-height:120px;overflow-y:auto"></textarea>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn-gen" onclick="importBulkText()">Разобрать и заполнить кадры</button>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+
+  <div id="framesWrap"></div>
+  <button class="add-frame-btn" onclick="addFrame(); saveState();">+ Добавить кадр</button>
+
+  <div class="btn-row">
+    <button class="btn-gen" onclick="generateSeries()">Сгенерировать промпты</button>
+  </div>
+  <div class="result-wrap" id="resultWrapSeries">
+    <div id="seriesResults"></div>
+  </div>
+  <button class="btn-reset" onclick="resetAll()">Сбросить всё</button>
+
+</div>
+
+</div>
+<script>
+var frameCounter = 0;
+var frameIds = [];
+var saveTimer = null;
+var textPromptResult = {post:'', meaning:''};
+
+var scenes = [
+  {icon:'☕',title:'Утренний стол',hint:'кофе, ноутбук, блокнот',val:'утренний стол — кофе, ноутбук, блокнот'},
+  {icon:'🏠',title:'Светлый интерьер',hint:'минимализм, нейтральные тона',val:'светлый минималистичный интерьер, нейтральные тона'},
+  {icon:'💻',title:'Рабочее место',hint:'стол, техника, порядок',val:'аккуратное рабочее пространство — стол, техника, порядок'},
+  {icon:'📱',title:'Телефон и планер',hint:'атмосфера продуктивности',val:'телефон и планер на столе, атмосфера продуктивности'},
+  {icon:'🌸',title:'Природа / окно',hint:'мягкий свет, зелень',val:'мягкий дневной свет, окно, зелень или цветы'},
+  {icon:'🏙️',title:'Город / улица',hint:'размытый фон, воздух',val:'размытый городской фон, улица, воздух и пространство'}
+];
+
+var typeLabels = {
+  photo:'🤳 нужно своё фото',
+  photo_screen:'🤳📱 нужно своё фото + скрин',
+  neutral:'🌿 фон сгенерирован NB',
+  neutral_screen:'🌿📱 фон сгенерирован NB + нужен скрин'
+};
+
+function switchMainTab(t){
+  document.querySelectorAll('.main-tab').forEach(function(b,i){ b.classList.toggle('active', i === (t==='text'?0:1)); });
+  document.getElementById('mainPaneText').classList.toggle('active', t==='text');
+  document.getElementById('mainPaneDesign').classList.toggle('active', t==='design');
+}
+
+function switchTextTab(t){
+  document.querySelectorAll('.text-tab').forEach(function(b,i){ b.classList.toggle('active', i === (t==='post'?0:1)); });
+  document.getElementById('textPanePost').classList.toggle('active', t==='post');
+  document.getElementById('textPaneMeaning').classList.toggle('active', t==='meaning');
+}
+
+function generateTextPrompt(kind){
+  var srcVal, countVal;
+  if(kind === 'post'){
+    srcVal = document.getElementById('postInput').value.trim();
+    countVal = document.getElementById('postCount').value.trim();
+    if(!srcVal){ alert('Вставь текст поста'); return; }
+  } else {
+    srcVal = document.getElementById('meaningInput').value.trim();
+    countVal = document.getElementById('meaningCount').value.trim();
+    if(!srcVal){ alert('Опиши смыслы которые хочешь донести'); return; }
+  }
+  var countNote = countVal ? countVal : '5-8';
+
+  var sourceBlock;
+  if(kind === 'post'){
+    sourceBlock = 'Вот текст поста, на основе которого нужно сделать серию сторис:\n\n"""\n' + srcVal + '\n"""\n\nРазбей смыслы из этого поста на серию сторис.';
+  } else {
+    sourceBlock = 'Вот смыслы, которые я хочу донести через серию сторис:\n\n"""\n' + srcVal + '\n"""\n\nРазработай на основе этих смыслов серию сторис.';
+  }
+
+  var prompt = sourceBlock + '\n\nСоздай сценарий на ' + countNote + ' сторис. Для каждой сторис напиши три части текста:\n— Главный заголовок (короткий, цепляющий)\n— Подзаголовок (раскрывает мысль главного заголовка)\n— Дополнение (1-3 коротких строки, можно перечисление — каждый пункт с новой строки)\n\nТребования к тексту:\n— пиши живо, разговорным языком, как будто не пишешь, а говоришь с подругой\n— можно использовать разговорные словечки и лёгкий мат (блин и т.п.) — по настроению, без перебора\n— без канцелярита и AI-штампов ("в современном мире", "не секрет, что", "и это не разовая удача", "и это не повезло", "может сработает", "а вдруг нет", "без тумана", "без иллюзий", "не «когда-нибудь»" и подобных шаблонных конструкций — не используй их и похожие по смыслу/структуре фразы. Если для Дополнения нет хорошей идеи — лучше оставь его пустым, чем добавляй такую фразу\n— перед тем как написать фразу, проверь: так ли говорят люди в обычном живом разговоре? Если нет — не используй. Только простые, понятные слова, как в обычном разговоре между друзьями\n— каждая сторис логически продолжает предыдущую, серия должна читаться как цельная история\n— добавляй живость и юмор там, где это уместно — без перебора, не превращая в стендап\n— если есть кейс или личный опыт — используй конкретику, цифры, детали\n— эмодзи используй точечно, чтобы подчеркнуть эмоцию момента: где грустно/тяжело — грустный эмодзи, где смешно — смеющийся, где радость или победа — соответствующий. Не ставь эмодзи просто для украшения, без эмоциональной привязки, и не в каждой сторис\n— в одной из последних сторис — мягкий призыв к действию\n\nФормат ответа — для каждой сторис отдельным блоком, метки **Главный заголовок**, **Подзаголовок**, **Дополнение** обязательно выделяй жирным:\n\nСторис 1\n**Главный заголовок:** ...\n**Подзаголовок:** ...\n**Дополнение:** ...\n\nСторис 2\n...';
+
+  textPromptResult[kind] = prompt;
+  var boxId = (kind === 'post') ? 'resultBoxPost' : 'resultBoxMeaning';
+  var wrapId = (kind === 'post') ? 'resultWrapPost' : 'resultWrapMeaning';
+  var btnId = (kind === 'post') ? 'copyBtnPost' : 'copyBtnMeaning';
+
+  document.getElementById(boxId).textContent = prompt;
+  document.getElementById(wrapId).classList.add('show');
+  var btn = document.getElementById(btnId);
+  btn.textContent = 'Копировать';
+  btn.classList.remove('copied');
+  btn.onclick = function(){ copyDirect(textPromptResult[kind], btn, 'Копировать'); };
+}
+
+function fillSceneGrid(gridId, wrapId){
+  var g = document.getElementById(gridId);
+  if(!g) return;
+  g.innerHTML = '';
+  for(var i=0;i<scenes.length;i++){
+    var s = scenes[i];
+    var b = document.createElement('button');
+    b.className = 'card';
+    b.dataset.scene = s.val;
+    b.setAttribute('onclick','selectScene(this,"'+gridId+'")');
+    b.style.cssText = 'padding:10px 12px;display:flex;align-items:center;gap:8px';
+    b.innerHTML = '<span style="font-size:18px">'+s.icon+'</span><span><span class="title" style="margin-bottom:1px">'+s.title+'</span><span class="hint">'+s.hint+'</span></span>';
+    g.appendChild(b);
+  }
+}
+
+function selectType(btn, gridId, wrapId){
+  var cards = document.querySelectorAll('#'+gridId+' .card[data-type]');
+  for(var i=0;i<cards.length;i++){ cards[i].classList.remove('active','error'); }
+  btn.classList.add('active');
+  var need = btn.dataset.type === 'neutral' || btn.dataset.type === 'neutral_screen';
+  document.getElementById(wrapId).classList.toggle('show', need);
+  if(!need){
+    var sc = document.querySelectorAll('#'+wrapId+' .card');
+    for(var j=0;j<sc.length;j++){ sc[j].classList.remove('active'); }
+  }
+  saveState();
+}
+function selectScene(btn, gridId){
+  var cards = document.querySelectorAll('#'+gridId+' .card');
+  for(var i=0;i<cards.length;i++){ cards[i].classList.remove('active','error'); }
+  btn.classList.add('active');
+  saveState();
+}
+function selectPos(btn, gridId){
+  var cards = document.querySelectorAll('#'+gridId+' .pos-card');
+  for(var i=0;i<cards.length;i++){ cards[i].classList.remove('active','error'); }
+  btn.classList.add('active');
+  saveState();
+}
+function autoResize(el){
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function getTypeVal(gridId){
+  var g = document.getElementById(gridId);
+  if(!g) return null;
+  var a = g.querySelector('.card.active[data-type]');
+  return a ? a.dataset.type : null;
+}
+function getSceneVal(gridId){
+  var g = document.getElementById(gridId);
+  if(!g) return null;
+  var a = g.querySelector('.card.active[data-scene]');
+  return a ? a.dataset.scene : null;
+}
+function getPosVal(gridId){
+  var g = document.getElementById(gridId);
+  if(!g) return null;
+  var a = g.querySelector('.pos-card.active');
+  return a ? a.dataset.pos : null;
+}
+
+function escapeHtml(s){
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function renderPreview(id){
+  var prev = document.getElementById('prev'+id);
+  if(!prev) return;
+  var h1El = document.getElementById('f'+id+'h1');
+  var h2El = document.getElementById('f'+id+'h2');
+  var h3El = document.getElementById('f'+id+'h3');
+  var h1 = h1El ? h1El.value.trim() : '';
+  var h2 = h2El ? h2El.value.trim() : '';
+  var h3 = h3El ? h3El.value.trim() : '';
+  if(!h1 && !h2 && !h3){
+    prev.innerHTML = '<div class="preview-empty">Превью появится после заполнения заголовка</div>';
+    return;
+  }
+  var html = '';
+  if(h1) html += '<div class="preview-h1">'+escapeHtml(h1)+'</div>';
+  if(h2) html += '<div class="preview-h2">'+escapeHtml(h2)+'</div>';
+  if(h3) html += '<div class="preview-h3">'+escapeHtml(h3)+'</div>';
+  prev.innerHTML = html;
+}
+
+function buildPrompt(type, scene, pos, h1, h2, h3){
+  var intro = '';
+  if(type === 'photo') intro = 'Создай дизайн для сторис, где будет использовано моё фото и текст.';
+  else if(type === 'photo_screen') intro = 'Создай дизайн для сторис, где будет использовано моё фото, скрин и текст.';
+  else if(type === 'neutral') intro = 'Создай дизайн для сторис, где будет использована нейтральная фото-подложка без людей и текст. Сцена: '+scene+'.';
+  else if(type === 'neutral_screen') intro = 'Создай дизайн для сторис, где будет использована нейтральная фото-подложка без людей, скрин и текст. Сцена: '+scene+'.';
+
+  var tb = 'Текст для размещения:\n— Главный заголовок: '+h1+'\n';
+  if(h2) tb += '— Подзаголовок: '+h2+'\n';
+  if(h3) tb += '— Дополнение: '+h3+'\n';
+
+  var posNote = pos || 'по центру кадра или в нижней трети, но не ниже 70% высоты';
+  var photoNote = (type && type.indexOf('photo') !== -1) ? ' Лицо и верхняя часть тела должны быть открыты.' : '';
+
+  var end = '\nОформление текста:\nГлавный заголовок — крупнее, остальные мельче, единый шрифт без засечек. Без золота, без градиентных шрифтов, без цветного текста. Не вставлять слова «Главный заголовок», «Подзаголовок», «Дополнение» — это метки структуры, не текст для сторис. Если в тексте есть несколько строк — сохранить каждую на отдельной строке.\n\nСтиль текстового блока выбери самостоятельно — уникальный и современный. Можно: frosted glass, тонкая рамка, полоса, текст без блока с мягкой тенью, асимметричное расположение. Запрещено: угловатые геометрические рамки со срезанными углами. Весь текст и декор строго внутри блока.\n\nКомпозиция:\nБлок с текстом — '+posNote+'. Блок полностью в кадре, не обрезается.'+photoNote+'\n\nСтиль: минималистичный, editorial, 2026. Можно добавить 1 тонкую линию или иконку — строго внутри блока.\n\nБез дополнительного текста от себя. Качество — как в дорогом lifestyle-каталоге. Никаких дешёвых эффектов.';
+
+  return intro + '\n\n' + tb + end;
+}
+
+function addFrame(){
+  frameCounter++;
+  var id = frameCounter;
+  frameIds.push(id);
+  var num = frameIds.length;
+  var tgId = 'tg'+id, swId = 'sw'+id, sgId = 'sg'+id, pgId = 'pg'+id;
+
+  var div = document.createElement('div');
+  div.className = 'frame-block';
+  div.id = 'fb'+id;
+
+  var html = '';
+  html += '<div class="frame-header">';
+  html += '<div class="frame-title"><span class="frame-num">'+num+'</span> Кадр '+num+'</div>';
+  if(frameIds.length > 1){
+    html += '<button class="frame-del" onclick="removeFrame('+id+')" title="Удалить кадр">×</button>';
+  }
+  html += '</div>';
+
+  html += '<div class="section" style="margin-bottom:14px"><div class="label">Тип подложки</div>';
+  html += '<div class="grid2" id="'+tgId+'">';
+  html += '<button class="card" data-type="photo" onclick="selectType(this,\''+tgId+'\',\''+swId+'\')"><span class="icon">🤳</span><span class="title">Своё фото</span><span class="hint">Фото с тобой</span></button>';
+  html += '<button class="card" data-type="photo_screen" onclick="selectType(this,\''+tgId+'\',\''+swId+'\')"><span class="icon">🤳📱</span><span class="title">Своё фото + скрин</span><span class="hint">Фото + скриншот</span></button>';
+  html += '<button class="card" data-type="neutral" onclick="selectType(this,\''+tgId+'\',\''+swId+'\')"><span class="icon">🌿</span><span class="title">Нейтральная подложка</span><span class="hint">NB генерирует фон</span></button>';
+  html += '<button class="card" data-type="neutral_screen" onclick="selectType(this,\''+tgId+'\',\''+swId+'\')"><span class="icon">🌿📱</span><span class="title">Подложка + скрин</span><span class="hint">Нейтральный фон + скрин</span></button>';
+  html += '</div>';
+  html += '<div class="scene-wrap" id="'+swId+'"><div class="label" style="margin-top:6px">Сцена для подложки</div><div class="grid2" id="'+sgId+'"></div></div></div>';
+
+  html += '<div class="section" style="margin-bottom:14px"><div class="label">Позиция блока</div>';
+  html += '<div class="pos-grid" id="'+pgId+'">';
+  html += '<button class="pos-card" data-pos="в верхней трети кадра" onclick="selectPos(this,\''+pgId+'\')"><span class="icon">⬆️</span><span class="title">Верх</span></button>';
+  html += '<button class="pos-card" data-pos="по центру кадра" onclick="selectPos(this,\''+pgId+'\')"><span class="icon">⬛</span><span class="title">Центр</span></button>';
+  html += '<button class="pos-card" data-pos="в нижней трети кадра, но не ниже 70% высоты" onclick="selectPos(this,\''+pgId+'\')"><span class="icon">⬇️</span><span class="title">Низ</span></button>';
+  html += '</div></div>';
+
+  html += '<div class="label">Заголовки</div>';
+  html += '<div class="hl-group">';
+  html += '<div class="hl-item"><div class="hl-label">Главный заголовок</div><textarea id="f'+id+'h1" placeholder="Текст главного заголовка" oninput="autoResize(this); renderPreview('+id+'); saveState();"></textarea></div>';
+  html += '<div class="hl-item"><div class="hl-label">Подзаголовок (необязательно)</div><textarea id="f'+id+'h2" placeholder="Текст подзаголовка" oninput="autoResize(this); renderPreview('+id+'); saveState();"></textarea></div>';
+  html += '<div class="hl-item"><div class="hl-label">Дополнение (необязательно)</div><textarea id="f'+id+'h3" placeholder="Дополнительный текст" oninput="autoResize(this); renderPreview('+id+'); saveState();"></textarea></div>';
+  html += '</div>';
+  html += '<div class="preview-box" id="prev'+id+'"><div class="preview-empty">Превью появится после заполнения заголовка</div></div>';
+
+  div.innerHTML = html;
+
+  document.getElementById('framesWrap').appendChild(div);
+  fillSceneGrid(sgId, swId);
+  renumberFrames();
+}
+
+function removeFrame(id){
+  var idx = frameIds.indexOf(id);
+  if(idx !== -1) frameIds.splice(idx,1);
+  var el = document.getElementById('fb'+id);
+  if(el) el.remove();
+  renumberFrames();
+  saveState();
+}
+
+function renumberFrames(){
+  for(var i=0;i<frameIds.length;i++){
+    var id = frameIds[i];
+    var num = i+1;
+    var fb = document.getElementById('fb'+id);
+    if(!fb) continue;
+    var numEl = fb.querySelector('.frame-num');
+    var titleEl = fb.querySelector('.frame-title');
+    var delBtn = fb.querySelector('.frame-del');
+    if(numEl) numEl.textContent = num;
+    if(titleEl) titleEl.lastChild.textContent = ' Кадр '+num;
+    if(frameIds.length > 1 && !delBtn){
+      var header = fb.querySelector('.frame-header');
+      var btn = document.createElement('button');
+      btn.className = 'frame-del';
+      btn.title = 'Удалить кадр';
+      btn.textContent = '×';
+      btn.setAttribute('onclick','removeFrame('+id+')');
+      header.appendChild(btn);
+    } else if(frameIds.length === 1 && delBtn){
+      delBtn.remove();
+    }
+  }
+}
+
+function importBulkText(){
+  var raw = document.getElementById('bulkImport').value;
+  if(!raw.trim()){ alert('Вставь текст для разбора'); return; }
+
+  var text = raw.replace(/\*\*/g,'');
+  var lines = text.split('\n');
+  var blocks = [];
+  var current = [];
+
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i];
+    if(/^\s*(Сторис|Кадр)\s*\d+/i.test(line)){
+      if(current.length) blocks.push(current.join('\n'));
+      current = [];
+    } else {
+      current.push(line);
+    }
+  }
+  if(current.length) blocks.push(current.join('\n'));
+
+  var parsed = [];
+  for(var j=0;j<blocks.length;j++){
+    var block = blocks[j];
+    var h1m = block.match(/Главный заголовок\s*:?\s*([\s\S]*?)(?=\n\s*Подзаголовок\s*:|\n\s*Дополнение\s*:|$)/i);
+    var h2m = block.match(/Подзаголовок\s*:?\s*([\s\S]*?)(?=\n\s*Дополнение\s*:|$)/i);
+    var h3m = block.match(/Дополнение\s*:?\s*([\s\S]*)$/i);
+    var h1 = h1m ? h1m[1].trim() : '';
+    var h2 = h2m ? h2m[1].trim() : '';
+    var h3 = h3m ? h3m[1].trim() : '';
+    if(h1 || h2 || h3){ parsed.push({h1:h1,h2:h2,h3:h3}); }
+  }
+
+  if(parsed.length === 0){
+    alert('Не удалось найти структуру "Сторис N / Главный заголовок / ..." в тексте');
+    return;
+  }
+
+  document.getElementById('framesWrap').innerHTML = '';
+  frameIds = [];
+
+  for(var k=0;k<parsed.length;k++){
+    var p = parsed[k];
+    addFrame();
+    var id = frameIds[frameIds.length-1];
+    var h1El = document.getElementById('f'+id+'h1');
+    var h2El = document.getElementById('f'+id+'h2');
+    var h3El = document.getElementById('f'+id+'h3');
+    if(h1El){ h1El.value = p.h1; autoResize(h1El); }
+    if(h2El){ h2El.value = p.h2; autoResize(h2El); }
+    if(h3El){ h3El.value = p.h3; autoResize(h3El); }
+    renderPreview(id);
+  }
+
+  saveState();
+
+  var first = document.getElementById('fb'+frameIds[0]);
+  if(first) first.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function generateSeries(){
+  var errCards = document.querySelectorAll('.card.error,.pos-card.error');
+  for(var e=0;e<errCards.length;e++){ errCards[e].classList.remove('error'); }
+
+  var results = [];
+  for(var i=0;i<frameIds.length;i++){
+    var id = frameIds[i];
+    var num = i+1;
+    var tgId='tg'+id, sgId='sg'+id, swId='sw'+id, pgId='pg'+id;
+    var type = getTypeVal(tgId);
+    if(!type){
+      var c1 = document.querySelectorAll('#'+tgId+' .card');
+      for(var x=0;x<c1.length;x++){ c1[x].classList.add('error'); }
+      document.getElementById('fb'+id).scrollIntoView({behavior:'smooth',block:'center'});
+      alert('Кадр '+num+': выбери тип подложки');
+      return;
+    }
+    var need = type === 'neutral' || type === 'neutral_screen';
+    var scene = need ? getSceneVal(sgId) : null;
+    if(need && !scene){
+      var c2 = document.querySelectorAll('#'+sgId+' .card');
+      for(var y=0;y<c2.length;y++){ c2[y].classList.add('error'); }
+      document.getElementById('fb'+id).scrollIntoView({behavior:'smooth',block:'center'});
+      alert('Кадр '+num+': выбери сцену');
+      return;
+    }
+    var h1El = document.getElementById('f'+id+'h1');
+    var h1 = h1El ? h1El.value.trim() : '';
+    if(!h1){
+      if(h1El) h1El.style.borderColor = '#e55';
+      document.getElementById('fb'+id).scrollIntoView({behavior:'smooth',block:'center'});
+      alert('Кадр '+num+': заполни главный заголовок');
+      return;
+    }
+    if(h1El) h1El.style.borderColor = '';
+    var h2El = document.getElementById('f'+id+'h2');
+    var h3El = document.getElementById('f'+id+'h3');
+    results.push({
+      num: num,
+      id: id,
+      type: type,
+      h1: h1,
+      h2: h2El ? h2El.value.trim() : '',
+      h3: h3El ? h3El.value.trim() : '',
+      text: buildPrompt(type, scene, getPosVal(pgId), h1, h2El ? h2El.value.trim() : '', h3El ? h3El.value.trim() : '')
+    });
+  }
+
+  var cont = document.getElementById('seriesResults');
+  cont.innerHTML = '';
+  for(var r=0;r<results.length;r++){
+    (function(res){
+      var wrap = document.createElement('div');
+      wrap.className = 'series-item';
+      var lbl = document.createElement('div');
+      lbl.className = 'result-label';
+      lbl.textContent = 'Кадр '+res.num;
+
+      var prev = document.createElement('div');
+      prev.className = 'series-preview';
+      var phtml = '';
+      if(res.h1) phtml += '<div class="preview-h1">'+escapeHtml(res.h1)+'</div>';
+      if(res.h2) phtml += '<div class="preview-h2">'+escapeHtml(res.h2)+'</div>';
+      if(res.h3) phtml += '<div class="preview-h3">'+escapeHtml(res.h3)+'</div>';
+      prev.innerHTML = phtml;
+
+      var row = document.createElement('div');
+      row.className = 'copy-row';
+      var btn = document.createElement('button');
+      btn.className = 'btn-copy';
+      btn.textContent = 'Копировать кадр '+res.num;
+      btn.onclick = function(){ copyDirect(res.text, btn, 'Копировать кадр '+res.num); };
+      var badge = document.createElement('div');
+      badge.className = 'subtype-badge';
+      badge.textContent = typeLabels[res.type] || '';
+      var editBtn = document.createElement('button');
+      editBtn.className = 'edit-link';
+      editBtn.textContent = 'Изменить';
+      editBtn.onclick = function(){
+        var fb = document.getElementById('fb'+res.id);
+        if(fb) fb.scrollIntoView({behavior:'smooth',block:'start'});
+      };
+      row.appendChild(btn);
+      row.appendChild(badge);
+      row.appendChild(editBtn);
+      wrap.appendChild(lbl);
+      wrap.appendChild(prev);
+      wrap.appendChild(row);
+      cont.appendChild(wrap);
+    })(results[r]);
+  }
+  document.getElementById('resultWrapSeries').classList.add('show');
+}
+
+function copyDirect(text, btn, label){
+  label = label || 'Копировать';
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  btn.textContent = '✓ Скопировано';
+  btn.classList.add('copied');
+  setTimeout(function(){
+    btn.textContent = label;
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function collectFrameData(id){
+  var h1El = document.getElementById('f'+id+'h1');
+  var h2El = document.getElementById('f'+id+'h2');
+  var h3El = document.getElementById('f'+id+'h3');
+  return {
+    type: getTypeVal('tg'+id),
+    scene: getSceneVal('sg'+id),
+    pos: getPosVal('pg'+id),
+    h1: h1El ? h1El.value : '',
+    h2: h2El ? h2El.value : '',
+    h3: h3El ? h3El.value : ''
+  };
+}
+
+function saveState(){
+  if(!window.storage || !window.storage.set) return;
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    var frames = [];
+    for(var i=0;i<frameIds.length;i++){ frames.push(collectFrameData(frameIds[i])); }
+    var payload = JSON.stringify({frames:frames});
+    window.storage.set('stories_draft', payload, false).then(function(){
+      var ind = document.getElementById('saveIndicator');
+      ind.classList.add('show');
+      setTimeout(function(){ ind.classList.remove('show'); }, 1200);
+    }).catch(function(e){});
+  }, 400);
+}
+
+function applyFrameData(id, f){
+  if(f.type){
+    var btn = document.querySelector('#tg'+id+' .card[data-type="'+f.type+'"]');
+    if(btn) selectType(btn, 'tg'+id, 'sw'+id);
+  }
+  if(f.scene){
+    var sbtn = document.querySelector('#sg'+id+' .card[data-scene="'+CSS.escape(f.scene)+'"]');
+    if(sbtn) selectScene(sbtn, 'sg'+id);
+  }
+  if(f.pos){
+    var pbtn = document.querySelector('#pg'+id+' .pos-card[data-pos="'+CSS.escape(f.pos)+'"]');
+    if(pbtn) selectPos(pbtn, 'pg'+id);
+  }
+  var h1El = document.getElementById('f'+id+'h1');
+  var h2El = document.getElementById('f'+id+'h2');
+  var h3El = document.getElementById('f'+id+'h3');
+  if(h1El && f.h1){ h1El.value = f.h1; autoResize(h1El); }
+  if(h2El && f.h2){ h2El.value = f.h2; autoResize(h2El); }
+  if(h3El && f.h3){ h3El.value = f.h3; autoResize(h3El); }
+  renderPreview(id);
+}
+
+function loadState(){
+  if(!window.storage || !window.storage.get){ addFrame(); return; }
+  window.storage.get('stories_draft', false).then(function(res){
+    if(!res || !res.value){ addFrame(); return; }
+    var data;
+    try { data = JSON.parse(res.value); } catch(e){ addFrame(); return; }
+    if(!data.frames || !data.frames.length){ addFrame(); return; }
+    for(var i=0;i<data.frames.length;i++){
+      addFrame();
+      var id = frameIds[frameIds.length-1];
+      applyFrameData(id, data.frames[i]);
+    }
+  }).catch(function(e){
+    addFrame();
+  });
+}
+
+function resetAll(){
+  frameIds = [];
+  frameCounter = 0;
+  document.getElementById('framesWrap').innerHTML = '';
+  document.getElementById('resultWrapSeries').classList.remove('show');
+  document.getElementById('seriesResults').innerHTML = '';
+  var bulk = document.getElementById('bulkImport');
+  bulk.value = '';
+  bulk.style.height = 'auto';
+  if(window.storage && window.storage.delete){
+    window.storage.delete('stories_draft', false).catch(function(e){});
+  }
+  addFrame();
+}
+
+loadState();
+</script>
+</body>
+</html>
