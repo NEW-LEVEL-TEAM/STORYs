@@ -30,6 +30,9 @@ textarea::placeholder,input::placeholder{color:#444}
 .btn-sec:hover{background:#F5A800;color:#000}
 .result-wrap{display:none;margin-top:12px}.result-wrap.show{display:block}
 .result-box{background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:10px;padding:14px;font-size:12px;line-height:1.7;color:#aaa;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;margin-bottom:8px}
+.copy-fixed-bar{display:none;position:fixed;bottom:0;left:0;right:0;padding:10px 16px;background:linear-gradient(to top,#0f0f0f 70%,transparent);z-index:50}
+.copy-fixed-bar.show{display:block}
+.copy-fixed-bar .btn-sec{margin-top:0}
 .series-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .series-card{display:flex;flex-direction:column;gap:6px}
 .series-card-label{font-size:10px;color:#F5A800;text-transform:uppercase;letter-spacing:.08em}
@@ -255,6 +258,10 @@ textarea::placeholder,input::placeholder{color:#444}
 </div>
 </div>
 
+<div class="copy-fixed-bar" id="copyFixedBar">
+  <button class="btn-sec" id="copyFixedBtn">Копировать</button>
+</div>
+
 <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <!-- SETTINGS MODAL — bottom sheet -->
@@ -376,6 +383,7 @@ function switchMainTab(t){
   document.querySelectorAll('.main-tab').forEach(function(b,i){b.classList.toggle('active',i===(t==='text'?0:1));});
   document.getElementById('mainPaneText').classList.toggle('active',t==='text');
   document.getElementById('mainPaneDesign').classList.toggle('active',t==='design');
+  if(t==='design')document.getElementById('copyFixedBar').classList.remove('show');
 }
 function switchTextTab(t){
   document.querySelectorAll('.text-tab').forEach(function(b,i){b.classList.toggle('active',i===(t==='post'?0:1));});
@@ -411,6 +419,12 @@ function genText(kind){
   var btn=document.getElementById(kind==='post'?'copyBtnPost':'copyBtnMeaning');
   btn.textContent='Копировать';
   btn.onclick=function(){cpText(textResults[kind],btn,'Копировать');};
+  // фиксированная кнопка
+  var fixedBar=document.getElementById('copyFixedBar');
+  var fixedBtn=document.getElementById('copyFixedBtn');
+  fixedBar.classList.add('show');
+  fixedBtn.textContent='Копировать';
+  fixedBtn.onclick=function(){cpText(p,fixedBtn,'Копировать');};
 }
 function cpText(text,btn,lbl){
   var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
