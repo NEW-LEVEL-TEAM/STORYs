@@ -414,10 +414,7 @@ function genText(kind){
   textResults[kind]=p;
   document.getElementById(kind==='post'?'resultBoxPost':'resultBoxMeaning').textContent=p;
   document.getElementById(kind==='post'?'resultWrapPost':'resultWrapMeaning').classList.add('show');
-  var btn=document.getElementById(kind==='post'?'copyBtnPost':'copyBtnMeaning');
-  btn.textContent='Копировать';
-  btn.onclick=function(){cpText(textResults[kind],btn,'Копировать');};
-  // фиксированная кнопка
+  // фиксированная кнопка внизу
   var fixedBar=document.getElementById('copyFixedBar');
   var fixedBtn=document.getElementById('copyFixedBtn');
   fixedBar.classList.add('show');
