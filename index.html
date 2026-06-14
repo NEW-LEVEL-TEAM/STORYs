@@ -72,19 +72,25 @@ textarea::placeholder,input::placeholder{color:#444}
   display:none;
   align-items:flex-end;
   justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom,0px);
 }
 .settings-overlay.show{display:flex}
 
 .settings-box{
+  margin-bottom:60px;
+}
+
+.settings-box{
   background:#1e1e1e;
   border:1.5px solid #2a2a2a;
-  border-radius:16px 16px 0 0;
+  border-radius:16px 16px 16px 16px;
   width:100%;
   max-width:600px;
   max-height:62vh;
   display:flex;
   flex-direction:column;
   overflow:hidden;
+  margin-bottom:56px;
 }
 
 .settings-handle{
