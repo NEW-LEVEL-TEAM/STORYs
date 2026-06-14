@@ -64,13 +64,13 @@ textarea::placeholder,input::placeholder{color:#444}
 .scroll-top{position:fixed;bottom:24px;right:20px;width:44px;height:44px;background:#F5A800;color:#000;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:99}
 .scroll-top.show{display:flex}
 
-/* ── SETTINGS MODAL — bottom sheet на всю высоту ── */
+/* ── SETTINGS MODAL — bottom sheet ── */
 .settings-overlay{
   position:fixed;inset:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.65);
   z-index:400;
   display:none;
-  align-items:flex-end;   /* прилипает к низу */
+  align-items:flex-end;
   justify-content:center;
 }
 .settings-overlay.show{display:flex}
@@ -78,114 +78,107 @@ textarea::placeholder,input::placeholder{color:#444}
 .settings-box{
   background:#1e1e1e;
   border:1.5px solid #2a2a2a;
-  border-radius:20px 20px 0 0;
-  padding:0;
+  border-radius:16px 16px 0 0;
   width:100%;
   max-width:600px;
-  /* занимает почти весь экран по высоте */
-  height:92vh;
+  max-height:78vh;
   display:flex;
   flex-direction:column;
   overflow:hidden;
 }
 
-/* ручка-индикатор */
 .settings-handle{
-  width:40px;height:4px;
+  width:36px;height:3px;
   background:#333;border-radius:2px;
-  margin:12px auto 0;
+  margin:10px auto 0;
   flex-shrink:0;
 }
 
-/* шапка: навигация + заголовок + закрыть */
 .settings-title{
   font-family:'Unbounded',sans-serif;font-size:11px;color:#F5A800;
   display:flex;justify-content:space-between;align-items:center;gap:6px;
-  padding:14px 16px 12px;
+  padding:10px 14px 10px;
   border-bottom:1px solid #2a2a2a;
   flex-shrink:0;
 }
 .settings-title-label{flex:1;text-align:center}
 .settings-nav{
   background:none;border:1.5px solid #2a2a2a;color:#888;
-  border-radius:7px;padding:4px 12px;font-size:16px;
-  cursor:pointer;font-family:inherit;transition:all .2s;min-width:40px;
+  border-radius:7px;padding:3px 10px;font-size:15px;
+  cursor:pointer;font-family:inherit;transition:all .2s;min-width:36px;
 }
 .settings-nav:hover{border-color:#F5A800;color:#F5A800}
 .settings-nav:disabled{opacity:.2;cursor:default}
 .settings-close{
   background:none;border:none;color:#666;
-  font-size:22px;cursor:pointer;line-height:1;
-  padding:4px 8px;
+  font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;
 }
 .settings-close:hover{color:#fff}
 
-/* скроллируемое тело */
 .settings-scroll{
   flex:1;
   overflow-y:auto;
-  padding:16px;
-  display:flex;flex-direction:column;gap:16px;
+  padding:12px 14px;
+  display:flex;flex-direction:column;gap:12px;
   -webkit-overflow-scrolling:touch;
 }
 
-.settings-section{display:flex;flex-direction:column;gap:8px}
+.settings-section{display:flex;flex-direction:column;gap:6px}
 .settings-label{font-size:10px;color:#F5A800;text-transform:uppercase;letter-spacing:.1em}
-.s2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.s2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .s-btn{
-  background:#141414;border:1.5px solid #2a2a2a;border-radius:10px;
-  padding:14px 8px;cursor:pointer;text-align:center;
-  color:#777;font-size:13px;font-weight:600;
+  background:#141414;border:1.5px solid #2a2a2a;border-radius:8px;
+  padding:10px 6px;cursor:pointer;text-align:center;
+  color:#777;font-size:12px;font-weight:600;
   font-family:inherit;transition:all .2s;line-height:1.3;
 }
 .s-btn:hover{border-color:#F5A800;color:#e8e8e8}
 .s-btn.active{border-color:#F5A800;background:#1e1a10;color:#F5A800;box-shadow:0 0 0 1px #F5A800}
 .s-btn.error{border-color:#e55;box-shadow:0 0 0 1px #e55}
 .s-scene-btn{
-  background:#141414;border:1.5px solid #2a2a2a;border-radius:10px;
-  padding:12px 6px;cursor:pointer;text-align:center;
-  color:#777;font-size:11px;font-weight:600;
+  background:#141414;border:1.5px solid #2a2a2a;border-radius:8px;
+  padding:8px 4px;cursor:pointer;text-align:center;
+  color:#777;font-size:10px;font-weight:600;
   font-family:inherit;transition:all .2s;line-height:1.3;
 }
-.s-scene-btn .si{font-size:18px;display:block;margin-bottom:4px}
+.s-scene-btn .si{font-size:15px;display:block;margin-bottom:2px}
 .s-scene-btn:hover{border-color:#F5A800;color:#e8e8e8}
 .s-scene-btn.active{border-color:#F5A800;background:#1e1a10;color:#F5A800;box-shadow:0 0 0 1px #F5A800}
 
-/* текстовые поля в модалке — просторные */
+/* поля — нормальный размер, авторесайз */
 .settings-edit-input{
   width:100%;
   background:#141414;
   border:1.5px solid #2a2a2a;
-  border-radius:10px;
-  padding:14px;
+  border-radius:8px;
+  padding:10px 12px;
   color:#e8e8e8;
-  font-size:15px;
+  font-size:14px;
   font-family:inherit;
   outline:none;
-  resize:none;            /* убираем ручку, поле само растягивается */
-  min-height:60px;
+  resize:none;
+  min-height:44px;
   line-height:1.5;
-  overflow:hidden;        /* авторесайз через JS */
+  overflow:hidden;
 }
 .settings-edit-input:focus{border-color:#F5A800}
 .settings-edit-input::placeholder{color:#444}
 
 .settings-field-label{
-  font-size:11px;color:#888;
-  margin-bottom:4px;margin-top:4px;
+  font-size:10px;color:#666;
+  margin-bottom:2px;margin-top:2px;
 }
 
-/* кнопка Применить — фиксирована внизу */
 .settings-footer{
-  padding:12px 16px;
+  padding:10px 14px;
   border-top:1px solid #2a2a2a;
   flex-shrink:0;
   background:#1e1e1e;
 }
 .settings-apply{
-  background:#F5A800;color:#000;border:none;border-radius:12px;
-  padding:16px;font-size:15px;font-weight:700;cursor:pointer;
+  background:#F5A800;color:#000;border:none;border-radius:10px;
+  padding:13px;font-size:14px;font-weight:700;cursor:pointer;
   width:100%;font-family:inherit;
 }
 </style>
