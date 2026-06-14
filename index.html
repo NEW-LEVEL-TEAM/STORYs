@@ -81,7 +81,7 @@ textarea::placeholder,input::placeholder{color:#444}
   border-radius:16px 16px 0 0;
   width:100%;
   max-width:600px;
-  max-height:78vh;
+  max-height:62vh;
   display:flex;
   flex-direction:column;
   overflow:hidden;
@@ -609,10 +609,14 @@ function openSettings(id){
   h1.value=d.h1||'';h2.value=d.h2||'';h3.value=d.h3||'';
   syncSettingsUI();
   document.getElementById('settingsModal').classList.add('show');
+  // lock body scroll
+  window._scrollY=window.scrollY;
+  document.body.style.position='fixed';
+  document.body.style.top='-'+window._scrollY+'px';
+  document.body.style.width='100%';
   // scroll to top of modal content
   var sc=document.querySelector('.settings-scroll');
   if(sc)sc.scrollTop=0;
-  // авторесайз после открытия
   setTimeout(autoGrowAll,50);
 }
 function syncSettingsUI(){
@@ -674,7 +678,14 @@ function applySettings(){
   if(!sType_){document.querySelectorAll('#sTypeGrid .s-btn').forEach(function(b){b.classList.add('error');});return;}
   saveCurrent();closeSettings();
 }
-function closeSettings(){document.getElementById('settingsModal').classList.remove('show');}
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('show');
+  document.body.style.overflow='';
+  document.body.style.position='';
+  document.body.style.top='';
+  document.body.style.width='';
+  if(window._scrollY!==undefined){window.scrollTo(0,window._scrollY);window._scrollY=undefined;}
+}
 function bgClose(e){if(e.target.id==='settingsModal')closeSettings();}
 
 window.addEventListener('scroll',function(){
