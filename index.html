@@ -63,32 +63,131 @@ textarea::placeholder,input::placeholder{color:#444}
 .save-indicator.show{opacity:1}
 .scroll-top{position:fixed;bottom:24px;right:20px;width:44px;height:44px;background:#F5A800;color:#000;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:99}
 .scroll-top.show{display:flex}
-/* SETTINGS */
-.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;align-items:center;justify-content:center;padding:16px}
+
+/* ── SETTINGS MODAL — bottom sheet на всю высоту ── */
+.settings-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:400;
+  display:none;
+  align-items:flex-end;   /* прилипает к низу */
+  justify-content:center;
+}
 .settings-overlay.show{display:flex}
-.settings-box{background:#1e1e1e;border:1.5px solid #2a2a2a;border-radius:14px;padding:18px;width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow-y:auto}
-.settings-title{font-family:'Unbounded',sans-serif;font-size:11px;color:#F5A800;display:flex;justify-content:space-between;align-items:center;gap:6px}
+
+.settings-box{
+  background:#1e1e1e;
+  border:1.5px solid #2a2a2a;
+  border-radius:20px 20px 0 0;
+  padding:0;
+  width:100%;
+  max-width:600px;
+  /* занимает почти весь экран по высоте */
+  height:92vh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* ручка-индикатор */
+.settings-handle{
+  width:40px;height:4px;
+  background:#333;border-radius:2px;
+  margin:12px auto 0;
+  flex-shrink:0;
+}
+
+/* шапка: навигация + заголовок + закрыть */
+.settings-title{
+  font-family:'Unbounded',sans-serif;font-size:11px;color:#F5A800;
+  display:flex;justify-content:space-between;align-items:center;gap:6px;
+  padding:14px 16px 12px;
+  border-bottom:1px solid #2a2a2a;
+  flex-shrink:0;
+}
 .settings-title-label{flex:1;text-align:center}
-.settings-nav{background:none;border:1.5px solid #2a2a2a;color:#888;border-radius:7px;padding:3px 10px;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
+.settings-nav{
+  background:none;border:1.5px solid #2a2a2a;color:#888;
+  border-radius:7px;padding:4px 12px;font-size:16px;
+  cursor:pointer;font-family:inherit;transition:all .2s;min-width:40px;
+}
 .settings-nav:hover{border-color:#F5A800;color:#F5A800}
 .settings-nav:disabled{opacity:.2;cursor:default}
-.settings-close{background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1}
+.settings-close{
+  background:none;border:none;color:#666;
+  font-size:22px;cursor:pointer;line-height:1;
+  padding:4px 8px;
+}
 .settings-close:hover{color:#fff}
-.settings-section{display:flex;flex-direction:column;gap:6px}
+
+/* скроллируемое тело */
+.settings-scroll{
+  flex:1;
+  overflow-y:auto;
+  padding:16px;
+  display:flex;flex-direction:column;gap:16px;
+  -webkit-overflow-scrolling:touch;
+}
+
+.settings-section{display:flex;flex-direction:column;gap:8px}
 .settings-label{font-size:10px;color:#F5A800;text-transform:uppercase;letter-spacing:.1em}
-.s2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
-.s-btn{background:#141414;border:1.5px solid #2a2a2a;border-radius:8px;padding:9px 6px;cursor:pointer;text-align:center;color:#777;font-size:11px;font-weight:600;font-family:inherit;transition:all .2s;line-height:1.3}
+.s2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.s-btn{
+  background:#141414;border:1.5px solid #2a2a2a;border-radius:10px;
+  padding:14px 8px;cursor:pointer;text-align:center;
+  color:#777;font-size:13px;font-weight:600;
+  font-family:inherit;transition:all .2s;line-height:1.3;
+}
 .s-btn:hover{border-color:#F5A800;color:#e8e8e8}
 .s-btn.active{border-color:#F5A800;background:#1e1a10;color:#F5A800;box-shadow:0 0 0 1px #F5A800}
 .s-btn.error{border-color:#e55;box-shadow:0 0 0 1px #e55}
-.s-scene-btn{background:#141414;border:1.5px solid #2a2a2a;border-radius:8px;padding:7px 4px;cursor:pointer;text-align:center;color:#777;font-size:10px;font-weight:600;font-family:inherit;transition:all .2s;line-height:1.3}
-.s-scene-btn .si{font-size:14px;display:block;margin-bottom:2px}
+.s-scene-btn{
+  background:#141414;border:1.5px solid #2a2a2a;border-radius:10px;
+  padding:12px 6px;cursor:pointer;text-align:center;
+  color:#777;font-size:11px;font-weight:600;
+  font-family:inherit;transition:all .2s;line-height:1.3;
+}
+.s-scene-btn .si{font-size:18px;display:block;margin-bottom:4px}
 .s-scene-btn:hover{border-color:#F5A800;color:#e8e8e8}
 .s-scene-btn.active{border-color:#F5A800;background:#1e1a10;color:#F5A800;box-shadow:0 0 0 1px #F5A800}
-.settings-edit-input{width:100%;background:#141414;border:1.5px solid #2a2a2a;border-radius:8px;padding:8px 10px;color:#e8e8e8;font-size:13px;font-family:inherit;outline:none;resize:vertical;min-height:36px;margin-bottom:4px}
+
+/* текстовые поля в модалке — просторные */
+.settings-edit-input{
+  width:100%;
+  background:#141414;
+  border:1.5px solid #2a2a2a;
+  border-radius:10px;
+  padding:14px;
+  color:#e8e8e8;
+  font-size:15px;
+  font-family:inherit;
+  outline:none;
+  resize:none;            /* убираем ручку, поле само растягивается */
+  min-height:60px;
+  line-height:1.5;
+  overflow:hidden;        /* авторесайз через JS */
+}
 .settings-edit-input:focus{border-color:#F5A800}
-.settings-apply{background:#F5A800;color:#000;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit}
+.settings-edit-input::placeholder{color:#444}
+
+.settings-field-label{
+  font-size:11px;color:#888;
+  margin-bottom:4px;margin-top:4px;
+}
+
+/* кнопка Применить — фиксирована внизу */
+.settings-footer{
+  padding:12px 16px;
+  border-top:1px solid #2a2a2a;
+  flex-shrink:0;
+  background:#1e1e1e;
+}
+.settings-apply{
+  background:#F5A800;color:#000;border:none;border-radius:12px;
+  padding:16px;font-size:15px;font-weight:700;cursor:pointer;
+  width:100%;font-family:inherit;
+}
 </style>
 </head>
 <body>
@@ -159,43 +258,56 @@ textarea::placeholder,input::placeholder{color:#444}
 
 <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<!-- SETTINGS MODAL -->
+<!-- SETTINGS MODAL — bottom sheet -->
 <div class="settings-overlay" id="settingsModal" onclick="bgClose(event)">
-  <div class="settings-box">
+  <div class="settings-box" id="settingsBox">
+    <div class="settings-handle"></div>
     <div class="settings-title">
       <button class="settings-nav" id="sNavPrev" onclick="navSettings(-1)">←</button>
       <span class="settings-title-label" id="settingsLabel">Кадр 1</span>
       <button class="settings-nav" id="sNavNext" onclick="navSettings(1)">→</button>
       <button class="settings-close" onclick="closeSettings()">×</button>
     </div>
-    <div class="settings-section">
-      <div class="settings-label">Тип подложки</div>
-      <div class="s2" id="sTypeGrid">
-        <button class="s-btn" data-type="photo" onclick="sType('photo')">🤳 Своё фото</button>
-        <button class="s-btn" data-type="photo_screen" onclick="sType('photo_screen')">🤳📱 Фото + скрин</button>
-        <button class="s-btn" data-type="neutral" onclick="sType('neutral')">🌿 Нейтральная</button>
-        <button class="s-btn" data-type="neutral_screen" onclick="sType('neutral_screen')">🌿📱 + скрин</button>
+
+    <div class="settings-scroll">
+      <div class="settings-section">
+        <div class="settings-label">Тип подложки</div>
+        <div class="s2" id="sTypeGrid">
+          <button class="s-btn" data-type="photo" onclick="sType('photo')">🤳 Своё фото</button>
+          <button class="s-btn" data-type="photo_screen" onclick="sType('photo_screen')">🤳📱 Фото + скрин</button>
+          <button class="s-btn" data-type="neutral" onclick="sType('neutral')">🌿 Нейтральная</button>
+          <button class="s-btn" data-type="neutral_screen" onclick="sType('neutral_screen')">🌿📱 + скрин</button>
+        </div>
+      </div>
+
+      <div class="settings-section" id="sSceneSection" style="display:none">
+        <div class="settings-label">Сцена</div>
+        <div class="s2" id="sSceneGrid"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Позиция текста</div>
+        <div class="s3" id="sPosGrid">
+          <button class="s-btn" data-pos="top" onclick="sPos('top')">⬆️ Верх</button>
+          <button class="s-btn" data-pos="center" onclick="sPos('center')">⬛ Центр</button>
+          <button class="s-btn" data-pos="bottom" onclick="sPos('bottom')">⬇️ Низ</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Заголовки <span style="color:#555;font-size:9px;text-transform:none">(можно отредактировать)</span></div>
+        <div class="settings-field-label">Главный заголовок</div>
+        <textarea class="settings-edit-input" id="sH1" placeholder="Главный заголовок" oninput="autoGrow(this)"></textarea>
+        <div class="settings-field-label">Подзаголовок <span style="color:#555">(необязательно)</span></div>
+        <textarea class="settings-edit-input" id="sH2" placeholder="Подзаголовок" oninput="autoGrow(this)"></textarea>
+        <div class="settings-field-label">Дополнение <span style="color:#555">(необязательно)</span></div>
+        <textarea class="settings-edit-input" id="sH3" placeholder="Дополнение" oninput="autoGrow(this)"></textarea>
       </div>
     </div>
-    <div class="settings-section" id="sSceneSection" style="display:none">
-      <div class="settings-label">Сцена</div>
-      <div class="s2" id="sSceneGrid"></div>
+
+    <div class="settings-footer">
+      <button class="settings-apply" onclick="applySettings()">Применить</button>
     </div>
-    <div class="settings-section">
-      <div class="settings-label">Позиция текста</div>
-      <div class="s3" id="sPosGrid">
-        <button class="s-btn" data-pos="top" onclick="sPos('top')">⬆️ Верх</button>
-        <button class="s-btn" data-pos="center" onclick="sPos('center')">⬛ Центр</button>
-        <button class="s-btn" data-pos="bottom" onclick="sPos('bottom')">⬇️ Низ</button>
-      </div>
-    </div>
-    <div class="settings-section">
-      <div class="settings-label">Заголовки <span style="color:#555;font-size:9px;text-transform:none">(можно отредактировать)</span></div>
-      <textarea class="settings-edit-input" id="sH1" placeholder="Главный заголовок"></textarea>
-      <textarea class="settings-edit-input" id="sH2" placeholder="Подзаголовок (необязательно)"></textarea>
-      <textarea class="settings-edit-input" id="sH3" placeholder="Дополнение (необязательно)"></textarea>
-    </div>
-    <button class="settings-apply" onclick="applySettings()">Применить</button>
   </div>
 </div>
 
@@ -231,6 +343,15 @@ var TYPE_HINT={
   neutral:'✨ NB сгенерирует фон',
   neutral_screen:'✨ NB сгенерирует фон, добавь скрин'
 };
+
+// ── авторесайз textarea ──────────────────────────────────────────
+function autoGrow(el){
+  el.style.height='auto';
+  el.style.height=el.scrollHeight+'px';
+}
+function autoGrowAll(){
+  document.querySelectorAll('.settings-edit-input').forEach(function(el){autoGrow(el);});
+}
 
 // ── хелперы позиции ─────────────────────────────────────────────
 function posClass(p){
@@ -353,9 +474,7 @@ function updateCanvas(id){
   }
 }
 
-function rebuildPrompt(id){
-  fp[id]=buildPrompt(fd[id]||{});
-}
+function rebuildPrompt(id){fp[id]=buildPrompt(fd[id]||{});}
 
 // ── add card ─────────────────────────────────────────────────────
 function addCard(id,num,data){
@@ -491,11 +610,17 @@ function openSettings(id){
   curId=id;
   var d=fd[id]||{};
   sType_=d.type||null;sScene=d.scene||null;sPos_=posShort(d.pos);
-  document.getElementById('sH1').value=d.h1||'';
-  document.getElementById('sH2').value=d.h2||'';
-  document.getElementById('sH3').value=d.h3||'';
+  var h1=document.getElementById('sH1');
+  var h2=document.getElementById('sH2');
+  var h3=document.getElementById('sH3');
+  h1.value=d.h1||'';h2.value=d.h2||'';h3.value=d.h3||'';
   syncSettingsUI();
   document.getElementById('settingsModal').classList.add('show');
+  // scroll to top of modal content
+  var sc=document.querySelector('.settings-scroll');
+  if(sc)sc.scrollTop=0;
+  // авторесайз после открытия
+  setTimeout(autoGrowAll,50);
 }
 function syncSettingsUI(){
   var idx=frameIds.indexOf(curId);
@@ -534,10 +659,14 @@ function navSettings(dir){
   curId=frameIds[ni];
   var d=fd[curId]||{};
   sType_=d.type||null;sScene=d.scene||null;sPos_=posShort(d.pos);
-  document.getElementById('sH1').value=d.h1||'';
-  document.getElementById('sH2').value=d.h2||'';
-  document.getElementById('sH3').value=d.h3||'';
+  var h1=document.getElementById('sH1');
+  var h2=document.getElementById('sH2');
+  var h3=document.getElementById('sH3');
+  h1.value=d.h1||'';h2.value=d.h2||'';h3.value=d.h3||'';
   syncSettingsUI();
+  setTimeout(autoGrowAll,50);
+  var sc=document.querySelector('.settings-scroll');
+  if(sc)sc.scrollTop=0;
 }
 function saveCurrent(){
   if(!curId)return;
