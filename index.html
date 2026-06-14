@@ -6,7 +6,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Inter:wght@400;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#0f0f0f;color:#e8e8e8;min-height:100vh;padding:32px 16px 40px}
+body{font-family:'Inter',sans-serif;background:#0f0f0f;color:#e8e8e8;min-height:100vh;padding:32px 16px 80px}
 .wrap{max-width:520px;margin:0 auto}
 h1{font-family:'Unbounded',sans-serif;font-size:13px;color:#F5A800;letter-spacing:.05em;margin-bottom:6px}
 .sub{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:20px;line-height:1.2}
@@ -221,7 +221,6 @@ textarea::placeholder,input::placeholder{color:#444}
     <button class="btn-gen" onclick="genText('post')">Сгенерировать промпт</button>
     <div class="result-wrap" id="resultWrapPost">
       <div class="result-box" id="resultBoxPost"></div>
-      <button class="btn-sec" id="copyBtnPost">Копировать</button>
     </div>
   </div>
   <div class="text-pane" id="textPaneMeaning">
@@ -236,7 +235,6 @@ textarea::placeholder,input::placeholder{color:#444}
     <button class="btn-gen" onclick="genText('meaning')">Сгенерировать промпт</button>
     <div class="result-wrap" id="resultWrapMeaning">
       <div class="result-box" id="resultBoxMeaning"></div>
-      <button class="btn-sec" id="copyBtnMeaning">Копировать</button>
     </div>
   </div>
 </div>
