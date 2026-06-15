@@ -107,7 +107,8 @@ textarea::placeholder,input::placeholder{color:#444}
 .add-card-btn:hover,.add-card-btn.pulse{border-color:#F5A800;color:#F5A800}
 .add-card-btn.pulse{animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,168,0,.3)}50%{box-shadow:0 0 0 6px rgba(245,168,0,0)}}
-.btn-make-beautiful{
+.cta-btn{font-size:11px;padding:8px 6px}
+.cta-btn.active{border-color:#F5A800;background:#1e1a10;color:#F5A800;box-shadow:0 0 0 1px #F5A800}
   background:linear-gradient(135deg,#1a1400,#2a2000);
   color:#F5A800;border:1.5px solid #F5A800;
   border-radius:8px;padding:13px 20px;
@@ -115,6 +116,23 @@ textarea::placeholder,input::placeholder{color:#444}
   width:100%;font-family:inherit;margin-top:8px;
   transition:all .2s;
   box-shadow:0 0 12px rgba(245,168,0,.15);
+}
+.btn-make-beautiful{
+  background:linear-gradient(135deg,#1a1400,#2a2000) !important;
+  color:#F5A800 !important;
+  border:1.5px solid #F5A800 !important;
+  border-radius:8px !important;
+  padding:13px 20px !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+  width:100% !important;
+  font-family:inherit !important;
+  margin-top:8px !important;
+  transition:all .2s !important;
+  box-shadow:0 0 12px rgba(245,168,0,.15) !important;
+  display:block !important;
+  text-align:center !important;
 }
 .btn-make-beautiful:hover{background:#F5A800;color:#000;box-shadow:0 0 20px rgba(245,168,0,.3)}
 .btn-reset{background:none;border:1.5px solid #333;color:#555;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;font-family:inherit;margin-top:8px;transition:all .2s;display:none}
@@ -320,8 +338,23 @@ textarea::placeholder,input::placeholder{color:#444}
   </div>
   <div class="text-pane" id="textPaneMeaning">
     <div class="section">
-      <div class="label">Смыслы, которые хочешь донести</div>
-      <textarea id="meaningInput" placeholder="Расскажи подробно про свой или командный кейс и не забудь упомянуть призыв к действию" style="min-height:90px"></textarea>
+      <div class="label">Про кого / про что</div>
+      <input type="text" id="storyHero" placeholder="Например: я, клиентка Катя, моя команда...">
+    </div>
+    <div class="section">
+      <div class="label">Подробности и детали</div>
+      <textarea id="meaningInput" placeholder="Расскажи подробно — кейс, ситуация, результат, цифры. Чем конкретнее, тем лучше" style="min-height:100px"></textarea>
+    </div>
+    <div class="section">
+      <div class="label">Призыв в конце <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(необязательно)</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px" id="ctaGrid">
+        <button class="s-btn cta-btn" onclick="setCTA(this,'Написать в личку')">💬 В личку</button>
+        <button class="s-btn cta-btn" onclick="setCTA(this,'Перейти по ссылке')">🔗 По ссылке</button>
+        <button class="s-btn cta-btn" onclick="setCTA(this,'Оставить реакцию на сторис')">❤️ Реакция</button>
+        <button class="s-btn cta-btn" onclick="setCTA(this,'Написать кодовое слово в директ')">🔑 Кодовое слово</button>
+        <button class="s-btn cta-btn" style="grid-column:span 2" onclick="setCTA(this,'')">✕ Без призыва</button>
+      </div>
+      <input type="text" id="ctaCustomMeaning" placeholder="Свой призыв..." oninput="clearCtaBtns()">
     </div>
     <div class="section">
       <div class="label">Сколько сторис <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(необязательно)</span></div>
@@ -340,8 +373,8 @@ textarea::placeholder,input::placeholder{color:#444}
     <div class="label">Вставь готовые тексты <span style="color:#555;font-size:10px;text-transform:none;letter-spacing:0">(заполнит кадры автоматически)</span></div>
     <textarea id="bulkImport" placeholder="Вставь сюда результат из вкладки «Тексты»" style="min-height:44px;max-height:200px" oninput="updateUI()"></textarea>
     <button class="btn-gen" onclick="importBulk()">Разобрать и заполнить кадры</button>
-    <button class="btn-reset" id="resetTop" onclick="resetAll()">Сбросить всё</button>
-    <button class="btn-make-beautiful" id="makeBeautifulBtn" style="display:none" onclick="makeBeautiful()">✨ Сделать красиво — рандом по всем кадрам</button>
+    <button class="btn-reset show" id="resetTop" onclick="resetAll()">Сбросить всё</button>
+    <button id="makeBeautifulBtn" onclick="makeBeautiful()" style="background:linear-gradient(135deg,#1a1400,#2a2000);color:#F5A800;border:1.5px solid #F5A800;border-radius:8px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;margin-top:8px;box-shadow:0 0 12px rgba(245,168,0,.15);display:block;text-align:center">✨ Сделать красиво — рандом по всем кадрам</button>
   </div>
   <!-- прогресс-бар -->
   <div class="progress-bar-wrap" id="progressWrap" style="display:none">
@@ -582,6 +615,30 @@ function updateUI(){
 function tog(id,show){var el=document.getElementById(id);if(el)el.classList.toggle('show',show);}
 
 // ── text prompt gen ──────────────────────────────────────────────
+var selectedCTA='';
+function clearCtaBtns(){
+  selectedCTA='';
+  document.querySelectorAll('.cta-btn').forEach(function(b){b.classList.remove('active');});
+}
+function setCTA(btn,val){
+  selectedCTA=val;
+  document.querySelectorAll('.cta-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var c1=document.getElementById('ctaCustom');if(c1)c1.value='';
+  var c2=document.getElementById('ctaCustomMeaning');if(c2)c2.value='';
+}
+function getCTA(){
+  var c1=document.getElementById('ctaCustom');
+  var c2=document.getElementById('ctaCustomMeaning');
+  if(c1&&c1.value.trim())return c1.value.trim();
+  if(c2&&c2.value.trim())return c2.value.trim();
+  return selectedCTA;
+}
+function getHero(){
+  var h=document.getElementById('storyHero');
+  return h?h.value.trim():'';
+}
+
 function genText(kind){
   var src=kind==='post'?document.getElementById('postInput').value.trim():document.getElementById('meaningInput').value.trim();
   var cnt=kind==='post'?document.getElementById('postCount').value.trim():document.getElementById('meaningCount').value.trim();
@@ -590,7 +647,11 @@ function genText(kind){
   var sb=kind==='post'
     ?'Вот текст поста:\n\n"""\n'+src+'\n"""\n\nРазбей смыслы из этого поста на серию сторис.'
     :'Вот смыслы:\n\n"""\n'+src+'\n"""\n\nРазработай на основе этих смыслов серию сторис.';
-  var p=sb+'\n\nСоздай сценарий на '+n+' сторис. Для каждой:\n— Главный заголовок (короткий, цепляющий)\n— Подзаголовок (раскрывает мысль)\n— Дополнение (1-3 строки, можно перечисление)\n\nСТИЛЬ — это главное:\n— Пишем так, как будто я говорю вслух подруге. Живая речь, простые слова, иногда незаконченные мысли — троеточие\n— Только слова из обычного разговора. Никакого умного языка\n— Лёгкий мат по настроению (блин, чёрт, да ладно) — если вписывается\n— Серия — это ИСТОРИЯ с началом, развитием и концом. Каждый кадр — следующий шаг рассказа, не отдельный факт\n— Приёмы: интрига в первом кадре (не раскрывай всё сразу), неожиданный поворот в середине, эмоциональный пик перед концом, мягкий призыв в финале\n— Незавершённость как крючок — "и тут выяснилось...", "но это ещё не всё", "а дальше было вот что"\n— Конкретика: цифры, детали, имена из кейса\n— Эмодзи точечно — только там где реально усиливают эмоцию\n— Юмор и самоирония где уместно\n\nЗАПРЕЩЕНО — эти слова и фразы НЕЛЬЗЯ использовать:\n— Умные/психологические термины: "паттерн", "триггер", "ресурс", "токсичный", "осознанность", "экологично", "вибрации", "нарратив", "контент", "смыслы", "ценности", "трансформация"\n— AI-штампы: "в современном мире", "не секрет, что", "без иллюзий", "не «когда-нибудь»", "и это не разовая удача", "может сработает", "без тумана", "давайте разберёмся", "на самом деле всё просто", "это работает", "погнали"\n— Канцелярщина: "данный", "является", "осуществляется", "в рамках"\n— Обрывки фраз без связи между кадрами\n— Если для Дополнения нет идеи — оставь пустым, НЕ пиши "---", "...", прочерки\n\nФормат, метки жирным:\n\nСторис 1\n**Главный заголовок:** текст\n**Подзаголовок:** текст\n**Дополнение:** текст или оставь пустым\n\nСторис 2\n...';
+  var hero=getHero();
+  var cta=getCTA();
+  var heroLine=hero?'\n\nПро кого/что: '+hero+'.':'';
+  var ctaLine=cta?'\n\nПоследний кадр — призыв: '+cta+'. Органично, своими словами, продолжение истории.':'';
+  var p=sb+heroLine+'\n\nКОНТЕКСТ: сторис для сетевого маркетинга (МЛМ). Аудитория — сетевики. Они знают: партнёры, команда, структура, чек, входящие, рекрутинг, маркетинг-план. Пиши на их языке.\n\nСоздай сценарий на '+n+' сторис. Каждая:\n— Заголовок: короткий, цепляет\n— Подзаголовок: продолжает или раскрывает\n— Дополнение: 1-3 строки или пусто\n\nЭТО ИСТОРИЯ с началом, поворотом, концом.\n\nСАМОЕ ВАЖНОЕ — СТИЛЬ:\nПредставь что ты голосовое пишешь подруге в 23:00. Вот именно ТАК и пиши. Эмоции настоящие, не придуманные. Юмор — не "хаха смешно", а то над чем реально смеются сетевики.\n\nПРИМЕРЫ КАК НАДО:\n"Катя пришла ко мне с таким лицом... ну ты знаешь это лицо 😅"\n"И вот она — человек, который ТРИ года говорил что сетевой не для него — пишет партнёрам"\n"Блин, я сама чуть не заплакала когда она прислала скрин чека"\n"Ко мне стали приходить сетевики из других компаний. Сами. Первые. Я пока не буду говорить что именно их привлекает 😎"\n\nПРИМЕРЫ КАК НЕ НАДО:\n"Система почему-то не складывалась" — скучно\n"Результат не заставил себя ждать" — мёртво\n"Она запустилась по системе" — как инструкция\n\nМожно: "блин", "чёрт", "ну вот", "и тут такое", "ты понимаешь да?", недосказанность, многоточие\nЗапрещено: "паттерн", "осознанность", "трансформация", "старты", "без иллюзий", канцелярщина'+ctaLine+'\n\nФормат:\n\nСторис 1\n**Главный заголовок:** текст\n**Подзаголовок:** текст\n**Дополнение:** текст\n\nСторис 2\n...';
   textResults[kind]=p;
   document.getElementById(kind==='post'?'resultBoxPost':'resultBoxMeaning').textContent=p;
   document.getElementById(kind==='post'?'resultWrapPost':'resultWrapMeaning').classList.add('show');
@@ -860,10 +921,8 @@ function updateProgress(){
   var pt=document.getElementById('progressText');
   var pf=document.getElementById('progressFill');
   var cl=document.getElementById('cardsLabel');
-  var mb=document.getElementById('makeBeautifulBtn');
   if(pw)pw.style.display=total>0?'block':'none';
   if(cl)cl.style.display=total>0?'block':'none';
-  if(mb)mb.style.display=total>0?'block':'none';
   if(pt)pt.textContent=done+' из '+total+' кадров настроены';
   if(pf)pf.style.width=(total>0?Math.round(done/total*100):0)+'%';
 }
@@ -977,6 +1036,14 @@ function addCard(id,num,data,skipAppend){
   wrap.appendChild(canvas);
   wrap.appendChild(cpBtn);
   wrap.appendChild(errDiv);
+  // кнопка удалить
+  var delBtn=document.createElement('button');
+  delBtn.style.cssText='background:none;border:none;color:#555;font-size:10px;cursor:pointer;font-family:inherit;padding:4px 0;transition:color .2s;text-align:center;width:100%';
+  delBtn.textContent='✕ удалить кадр';
+  (function(fid){delBtn.onclick=function(){deleteCard(fid);};})(id);
+  delBtn.onmouseover=function(){this.style.color='#e55';};
+  delBtn.onmouseout=function(){this.style.color='#333';};
+  wrap.appendChild(delBtn);
 
   // добавляем перед кнопкой +
   var addCell=document.getElementById('addCardCell');
@@ -985,6 +1052,26 @@ function addCard(id,num,data,skipAppend){
 
   initDrag(id,wrap);
   updateCanvas(id);
+}
+
+function deleteCard(id){
+  var idx=frameIds.indexOf(id);
+  if(idx<0)return;
+  frameIds.splice(idx,1);
+  delete fd[id];delete fp[id];
+  var wrap=document.getElementById('card_wrap_'+id);
+  if(wrap)wrap.remove();
+  // пересобираем номера
+  frameIds.forEach(function(fid,i){
+    var nm=document.getElementById('sn'+fid);
+    if(nm)nm.textContent=i+1;
+    var cm=document.getElementById('scm'+fid);
+    if(cm&&!fp[fid])cm.textContent='Промпт '+(i+1);
+  });
+  renderAddBtn();
+  updateProgress();
+  updateUI();
+  saveState();
 }
 
 function addEmptyCard(){
